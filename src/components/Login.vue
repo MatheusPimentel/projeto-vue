@@ -13,9 +13,9 @@
 
           <b-nav-form>
             <b-row style="margin-right: 10px">
-              <b-form-input size="sm" class="mr-sm-2" v-model="userLogin.user" type="text" placeholder="Login"></b-form-input>
-              <b-form-input size="sm" class="mr-sm-2" v-model="userLogin.password" type="password" placeholder="Senha"></b-form-input>
-              <b-button size="sm" class="my-2 my-sm-0" type="submit" variant="success">Entrar</b-button>
+              <b-form-input size="sm" class="mr-sm-2" v-model="userLogin.email" type="text" placeholder="Login"></b-form-input>
+              <b-form-input size="sm" class="mr-sm-2" v-model="userLogin.senha" type="password" placeholder="Senha"></b-form-input>
+              <b-button size="sm" @click="login" class="my-2 my-sm-0" type="submit" variant="success">Entrar</b-button>
             </b-row>
           </b-nav-form>
         </b-navbar-nav>
@@ -32,10 +32,10 @@
               class="mb-2">
         <b-row>
           <b-col>
-            <input-register v-model="userRegister.name" :type="typeInput.name.type" :required="required" :placeholder="typeInput.name.placeholder" />
+            <input-register v-model="userRegister.nome" :type="typeInput.name.type" :required="required" :placeholder="typeInput.name.placeholder" />
           </b-col>
           <b-col>
-            <input-register v-model="userRegister.number" :type="typeInput.number.type" :required="required" :placeholder="typeInput.number.placeholder" />
+            <input-register v-model="userRegister.numero" :type="typeInput.number.type" :required="required" :placeholder="typeInput.number.placeholder" />
           </b-col>
         </b-row>
         <b-row style="margin-top: 15px">
@@ -43,11 +43,10 @@
             <input-register v-model="userRegister.email" :type="typeInput.email.type" :required="required" :placeholder="typeInput.email.placeholder" />
           </b-col>
           <b-col>
-            <input-register v-model="userRegister.password" :type="typeInput.password.type" :required="required" :placeholder="typeInput.password.placeholder" />
+            <input-register v-model="userRegister.senha" :type="typeInput.password.type" :required="required" :placeholder="typeInput.password.placeholder" />
           </b-col>
         </b-row>
-        <button-bts  type="success" :onClick="teste" style="margin-top: 15px">Registrar</button-bts>
-        {{msg.olaMundo}}
+        <button-bts  type="success" :onClick="register" style="margin-top: 15px">Registrar</button-bts>
       </b-card>
     </div>
   </div>
@@ -57,7 +56,7 @@
 <script>
 import input from './componentsParents/inputForm'
 import button from './componentsParents/Button'
-import {olaMundo} from '../services/requestService'
+import {olaMundo, login, register} from '../services/requestService'
 export default {
   name: 'login',
   components: {
@@ -96,6 +95,35 @@ export default {
         .then((response) => {
           this.msg = response.data
           console.log(response.data)
+        }).catch((err) => {
+          console.log(err.response)
+        })
+    },
+    login () {
+      console.log('chamou login')
+      login(this.userLogin)
+        .then((response) => {
+          if (response.data) {
+            console.log(response.data)
+            this.$store.commit('changeState', response.data)
+            this.$router.push('/private/main')
+          } else {
+
+          }
+        }).catch((err) => {
+          console.log(err.response)
+        })
+    },
+    register () {
+      register(this.userRegister)
+        .then((response) => {
+          if (response.data) {
+            console.log(response.data)
+            this.$store.commit('changeState', response.data)
+            this.$router.push('/private/main')
+          } else {
+
+          }
         }).catch((err) => {
           console.log(err.response)
         })
